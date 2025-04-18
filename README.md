@@ -83,7 +83,7 @@ The example checker takes a list of integers (comma-separated or space-separated
 
 Example usage:
 ```bash
-python example_checker.py 1, 2, 3, 5, 8, 14, 25, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100
+python example_checker.py 1, 2, 3, 5, 8, 14, 25, 47, 100, 100, 100, 100, 100, 100, 100, 100, 100
 ```
 
 ## Performance
