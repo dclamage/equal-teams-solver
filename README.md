@@ -1,10 +1,28 @@
 # Equal Team Sum Solver
 
-This Python project uses Google's OR-Tools CP-SAT solver to solve an interesting mathematical problem about equal-sum team combinations. The program determines the minimum number N such that ANY multiset of N integers in the range [1,100] always contains two disjoint 5-element subsets whose sums are equal.
+This Python project uses Google's OR-Tools CP-SAT solver to explore a mathematical conjecture about equal-sum team combinations. For a given number N, it tries to find a counterexample - a set of N integers between 1 and 100 that does NOT contain any two disjoint 5-element subsets with equal sums. The program can be used to test different values of N to find these counterexamples or prove that none exist.
 
-## Problem Description
+A counterexample is a set of N integers between 1 and 100 that demonstrates the property doesn't hold - meaning there are NO two disjoint 5-element subsets within it that sum to the same value. The absence of a counterexample for a given N would prove that ANY set of N integers between 1 and 100 must contain two disjoint 5-element subsets with equal sums.
 
-Given a set of numbers between 1 and 100, the program tries to find two non-overlapping teams of 5 players each that have the same total sum. The goal is to find the threshold number N where it becomes impossible to create a set that doesn't have two equal-sum disjoint teams.
+## Known Counter-Examples
+
+Here are the known counter-examples for different values of N. A counter-example is a set of N numbers that contains NO two disjoint 5-element subsets with equal sums:
+
+| N   | Counter-Example |
+|-----|---------------------------|
+| 11  |1, 1, 1, 1, 1, 1, 1, 1, 3, 4, 5|
+| 12  |1, 1, 3, 3, 4, 4, 4, 4, 4, 5, 15, 25|
+| 13  |1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 6, 99|
+| 14  |1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 8, 14, 67|
+| 15  |1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 5, 24, 38, 50|
+| 16  |1, 2, 3, 3, 3, 3, 3, 11, 29, 33, 47, 99, 99, 99, 99, 99|
+| 17  |1, 2, 3, 5, 8, 14, 25, 47, 100, 100, 100, 100, 100, 100, 100, 100, 100|
+
+## Theoretical Bounds
+
+It has been theoretically proven that there exists some N ≤ 35 such that every set of N integers from [1,100] must contain two disjoint 5-element subsets with equal sums. In other words, 35 is an upper bound on the threshold - it's impossible to construct a counter-example with 35 or more numbers. The exact threshold may be (and likely is) lower than this bound.
+
+*Note: The theoretical proof establishing N ≤ 35 needs citation. If you have a reference to this result, please open an issue or pull request.*
 
 ## Requirements
 
@@ -15,7 +33,7 @@ Given a set of numbers between 1 and 100, the program tries to find two non-over
 
 1. Clone this repository:
 ```bash
-git clone [repository-url]
+git clone https://github.com/dclamage/equal-teams-solver
 ```
 
 2. Create a virtual environment (recommended):
@@ -31,15 +49,42 @@ pip install -r requirements.txt
 
 ## Usage
 
-Run the program with:
+### Main Solver
+
+Run the solver program with:
 ```bash
-python equal_teams_solver.py
+python equal_teams_solver.py [options]
 ```
 
+Command line options:
+- `--limit SECONDS`: Global time limit in seconds (default: 600)
+- `--threads N`: Number of worker threads (default: CPU count)
+- `--start N`: First N to try (default: 14)
+- `--end N`: Last N to try (default: 17)
+- `--no-cegar`: Disable CEGAR and use static solve instead
+
 The program will:
-1. Test values of N from 14 to 17
+1. Test values of N from the start value to the end value
 2. For each N, try to find a solution using CP-SAT solver
-3. Print the solution status and computation time for each N
+3. Use either CEGAR (Counter-Example Guided Abstraction Refinement) or static solving
+4. Print the solution status and computation time for each N
+
+### Example Checker
+
+To verify potential counter-examples, use the example checker:
+```bash
+python example_checker.py <int1>[,] <int2>[,] ...
+```
+
+The example checker takes a list of integers (comma-separated or space-separated) and:
+1. Checks if there are two disjoint 5-element subsets with equal sums
+2. If found, prints the subsets and their indices
+3. If not found, confirms the set is a valid counter-example
+
+Example usage:
+```bash
+python example_checker.py 1, 2, 3, 5, 8, 14, 25, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100
+```
 
 ## Performance
 
@@ -48,11 +93,11 @@ The program uses Google's OR-Tools CP-SAT solver and includes optimizations:
 - Pre-computation of all possible 5-element subsets
 - Efficient handling of disjoint team combinations
 - Multi-threaded search with configurable thread count
-- Maximum solving time limit of 10 minutes per instance
+- Maximum solving time limit (configurable per instance)
 - Performance timing information for each calculation
-
-According to the mathematical conjecture, the threshold should be 17, meaning any set of 17 or more numbers between 1 and 100 must contain two disjoint 5-element subsets with equal sums.
+- CEGAR ([Counter-Example Guided Abstraction Refinement](https://en.wikipedia.org/wiki/Counterexample-guided_abstraction_refinement)) by default
+- Optional static solving mode (sometimes faster)
 
 ## License
 
-[Add your chosen license here]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
