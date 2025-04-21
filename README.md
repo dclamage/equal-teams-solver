@@ -22,7 +22,7 @@ Here are the known counter-examples for different values of N. A counter-example
 
 It has been theoretically proven that there exists some N ≤ 35 such that every set of N integers from [1,100] must contain two disjoint 5-element subsets with equal sums. In other words, 35 is an upper bound on the threshold - it's impossible to construct a counter-example with 35 or more numbers. The exact threshold may be (and likely is) lower than this bound.
 
-*Note: The theoretical proof establishing N ≤ 35 needs citation. If you have a reference to this result, please open an issue or pull request.*
+See this [Math Overflow](https://mathoverflow.net/questions/448083/how-many-players-are-needed-so-that-two-evenly-matched-teams-can-be-picked) post for the proof.
 
 ## Requirements
 
